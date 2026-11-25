@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ПКГ · Растровые алгоритмы</title>
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <main class="frame">
+        <nav class="tabs" aria-label="Разделы лабораторной">
+            <button type="button" class="tab current" id="tabRaster" aria-controls="raster">Построение</button>
+            <button type="button" class="tab" id="tabBenchmark" aria-controls="benchmark">Бенчмарк</button>
+        </nav>
+        <noscript><p class="card">Для построения и замеров требуется JavaScript.</p></noscript>
+        <section id="raster">
+            <div class="raster-layout">
+                <form id="drawForm" class="card controls">
+                    <h2>Параметры фигуры</h2>
+                    <label for="method">Алгоритм</label>
+                    <select id="method">
+                        <option value="step">Пошаговый (отрезок)</option>
+                        <option value="dda">ЦДА (отрезок)</option>
+                        <option value="bresenham">Брезенхем (отрезок)</option>
+                        <option value="wu">Ву (сглаживание отрезка)</option>
+                        <option value="circle">Брезенхем (окружность)</option>
+                        <option value="ellipse">Кастл–Питвей (эллипс)</option>
+                    </select>
+                    <div class="input-row">
+                        <div><label id="labelX0" for="x0">Начало X₁</label><input id="x0" type="text" inputmode="numeric" value="-24" maxlength="4"></div>
+                        <div><label id="labelY0" for="y0">Начало Y₁</label><input id="y0" type="text" inputmode="numeric" value="-11" maxlength="4"></div>
+                    </div>
+                    <div class="input-row">
+                        <div><label id="labelX1" for="x1">Конец X₂</label><input id="x1" type="text" inputmode="numeric" value="23" maxlength="4"></div>
+                        <div id="secondY"><label id="labelY1" for="y1">Конец Y₂</label><input id="y1" type="text" inputmode="numeric" value="15" maxlength="4"></div>
+                    </div>
+                    <div class="actions">
+                        <button type="submit" class="primary">Построить</button>
+                        <button type="button" id="example">Пример</button>
+                        <button type="button" id="clear">Очистить</button>
+                    </div>
+                    <p id="rasterStatus" class="status" role="status"></p>
+                </form>
+                <section class="card plot-card">
+                    <div class="plot-title">
+                        <h2>Виртуальный растр</h2>
+                        <span id="cursor" class="muted">61 × 45 клеток</span>
+                    </div>
+                    <div class="view-controls">
+                        <label for="scale">Масштаб</label>
+                        <select id="scale">
+                            <option value="6">6 пикс./кл.</option>
+                            <option value="8" selected>8 пикс./кл.</option>
+                            <option value="10">10 пикс./кл.</option>
+                            <option value="12">12 пикс./кл.</option>
+                            <option value="14">14 пикс./кл.</option>
+                            <option value="18">18 пикс./кл.</option>
+                        </select>
+                        <label><input id="showGrid" type="checkbox" checked> Сетка</label>
+                        <label><input id="showAxes" type="checkbox" checked> Оси</label>
+                        <label><input id="showLabels" type="checkbox" checked> Подписи</label>
+                    </div>
+                    <div class="scroll"><canvas id="gridCanvas" width="548" height="408" aria-label="Координатная сетка"></canvas></div>
+                    <div class="legend raster-legend">
+                        <span><i class="key preview-key" aria-hidden="true"></i>Предпросмотр</span>
+                        <span><i class="key built-key" aria-hidden="true"></i>Построено</span>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section id="benchmark" class="hidden">
+            <div class="card">
+                <h2>Замер времени растеризации</h2>
+                <div class="actions">
+                    <button type="button" class="primary" id="runBenchmark">Запустить бенчмарк</button>
+                    <button type="button" id="showBenchmarkExample">Пример результатов</button>
+                </div>
+                <p id="benchStatus" class="status" role="status"></p>
+                <div class="progress-track hidden" id="progressTrack"><div id="progressBar"></div></div>
+            </div>
+            <div id="benchOutput" class="hidden">
+                <section class="card">
+                    <h2>Итоговые замеры</h2>
+                    <div class="scroll">
+                        <table>
+                            <thead><tr><th scope="col">Алгоритм</th><th scope="col">Примитивов</th><th scope="col">Время, мс</th><th scope="col">Мкс на примитив</th></tr></thead>
+                            <tbody id="resultRows"></tbody>
+                        </table>
+                    </div>
+                </section>
+                <section class="card">
+                    <h2>Растры бенчмарка</h2>
+                    <div class="benchmark-rasters">
+                        <div>
+                            <h3 id="benchmarkLinesTitle">100 000 отрезков · Брезенхем</h3>
+                            <canvas id="benchmarkLines" aria-labelledby="benchmarkLinesTitle"></canvas>
+                        </div>
+                        <div>
+                            <h3 id="benchmarkCirclesTitle">50 000 окружностей · Брезенхем</h3>
+                            <canvas id="benchmarkCircles" aria-labelledby="benchmarkCirclesTitle"></canvas>
+                        </div>
+                    </div>
+                </section>
+                <div id="charts"></div>
+            </div>
+        </section>
+    </main>
+    <script src="src/js/raster.js"></script>
+    <script src="src/js/algorithms.js"></script>
+    <script src="src/js/benchmark.js"></script>
+    <script src="src/js/benchmark-example.js"></script>
+    <script src="src/js/painter.js"></script>
+    <script src="src/js/app.js"></script>
+</body>
+</html>
